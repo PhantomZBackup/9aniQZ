@@ -1,4 +1,4 @@
-name: Test
+name: OmniTest
 
 on:
   workflow_dispatch:
@@ -27,15 +27,23 @@ on:
         - en
         - ja
         - und
-      SpeedProf:
-        description: "SpeedProf"
+      R3NC0D3R:
+        description: "R3NC0D3R"
         required: true
-        default: "2"
+        default: "VP9"
         type: choice
         options:
-        - "2"
-        - "3"
-        - "4"
+        - VP9
+        - AV1
+      VidRes:
+        description: "VidRes"
+        required: true
+        default: "480"
+        type: choice
+        options:
+        - "450"
+        - "480"
+        - "576"
 
 env:
   SOURCERY: ${{ secrets.SOURCERY }}
@@ -44,8 +52,8 @@ env:
   AniName: ${{ github.event.inputs.AniName }}
   EpCode: ${{ github.event.inputs.EpCode }}
   AniLang: ${{ github.event.inputs.AniLang }}
-  SpeedProf: ${{ github.event.inputs.SpeedProf }}
-  QScale: "32"
+  R3NC0D3R: ${{ github.event.inputs.R3NC0D3R }}
+  VidRes: ${{ github.event.inputs.VidRes }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
   RCLONE_INSTALL_MIRROR: ${{ secrets.RCLONE_INSTALL_MIRROR }}
   FTOOL_ARC_URL: ${{ secrets.FTOOL_ARC_URL }}
@@ -60,6 +68,8 @@ jobs:
       ChunkDir: ${{ steps.set-params.outputs.ChunkDir }}
       ChunkEncDir: ${{ steps.set-params.outputs.ChunkEncDir }}
       AudioType: ${{ steps.set-params.outputs.AudioType }}
+      TotalFrames: ${{ steps.set-params.outputs.TotalFrames }}
+      OrigFrameRate: ${{ steps.set-params.outputs.OrigFrameRate }}
       FrameRate: ${{ steps.set-params.outputs.FrameRate }}
       matrix: ${{ steps.set-params.outputs.matrix }}
     steps:
@@ -94,6 +104,8 @@ jobs:
           echo "::set-output name=ChunkDir::${ChunkDir}"
           echo "::set-output name=ChunkEncDir::${ChunkEncDir}"
           echo "::set-output name=AudioType::${AudioType}"
+          echo "::set-output name=TotalFrames::${TotalFrames}"
+          echo "::set-output name=OrigFrameRate::${OrigFrameRate}"
           echo "::set-output name=FrameRate::${FrameRate}"
           export input_matrix=$(for i in $(seq -w 001 ${Chunks}); do
             printf "\"%s\"," "${i}"
@@ -131,7 +143,8 @@ jobs:
           eval 'set -o history' 2>/dev/null
           DEOBFUS ./partials/EncDl.002e9d03fdd3
           sudo chmod a+x /usr/local/bin/ff[mp]*
-      - name: "AniWorker Job - ${{env.AniName}} ${{env.Episode}} part_${{env.ChunkNum}}"
+      - name: "AniWorker Job - ${{env.AniName}} ${{env.EpCode}} part_${{env.ChunkNum}}"
+        id: get-warn
         env:
           ChunkDir: ${{ needs.primary.outputs.ChunkDir }}
           ChunkEncDir: ${{ needs.primary.outputs.ChunkEncDir }}
@@ -144,7 +157,7 @@ jobs:
           source ./SOURCERY &>/dev/null
           rm -f ./SOURCERY
           eval 'set -o history' 2>/dev/null
-          DEOBFUS ./partials/EncAV.5bc0d8079370
+          DEOBFUS ./partials/EncWr.2f8bb14e0140
 
   final:
     runs-on: ubuntu-latest
@@ -167,11 +180,13 @@ jobs:
           DEOBFUS ./partials/EncCh.980c778e72ec
           DEOBFUS ./partials/EncDl.002e9d03fdd3
           sudo chmod a+x /usr/local/bin/ff[mp]*
-      - name: "AniMerger Job - ${{env.AniName}} - ${{env.Episode}}"
+      - name: "AniMerger Job - ${{env.AniName}} - ${{env.EpCode}}"
         env:
           ChunkDir: ${{ needs.primary.outputs.ChunkDir }}
           ChunkEncDir: ${{ needs.primary.outputs.ChunkEncDir }}
           AudioType: ${{ needs.primary.outputs.AudioType }}
+          TotalFrames: ${{ needs.primary.outputs.TotalFrames }}
+          OrigFrameRate: ${{ needs.primary.outputs.OrigFrameRate }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null
           eval 'set +o history' 2>/dev/null
