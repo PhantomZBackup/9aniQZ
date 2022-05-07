@@ -27,25 +27,25 @@ on:
         - ja
         - en
       SpeedProf:
-        description: "SpeedProf"
+        description: "SpeedProf, 0|2|3|X"
         required: false
-        default: "2"
-        type: choice
-        options:
-        - "0"
-        - "2"
-        - "3"
-        - "X"
+        default: ""
+        type: string
+      QCTest:
+        description: "Quality Control"
+        required: true
+        type: boolean
+        default: false
 
 env:
   SOURCERY: ${{ secrets.SOURCERY }}
   LocationOnIndex: "td:/9animeStreamZ"
   ChunkLocationOnIndex: "td:/9animeChunkZ"
-  PlaylistURL: ${{ github.event.inputs.PlaylistURL }}
   AniName: ${{ github.event.inputs.AniName }}
   EpCode: ${{ github.event.inputs.EpCode }}
   AniLang: ${{ github.event.inputs.AniLang }}
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
+  QCTest: ${{ github.event.inputs.QCTest }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
   RCLONE_INSTALL_MIRROR: ${{ secrets.RCLONE_INSTALL_MIRROR }}
   FTOOL_ARC_URL: ${{ secrets.FTOOL_ARC_URL }}
@@ -69,13 +69,15 @@ jobs:
           DEOBFUS ./20-EncYtdl-35df7a665295
           DEOBFUS ./20-EncRenc-9bd9703bdd01
       - name: "AniLoad Job - ${{env.AniName}} - ${{env.EpCode}}"
+        env:
+          PlaylistURL: ${{ github.event.inputs.PlaylistURL }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./33-EncTrns-fab7572c4e16
           DEOBFUS ./37-EncGnrt-17e086dd6e4a
-      - name: "AniLoad Job - ${{env.AniName}} - ${{env.EpCode}}"
+      - name: "API Sequencer - ${{env.AniName}} - ${{env.EpCode}}"
         if: env.SpeedProf != ''
         env:
           GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
