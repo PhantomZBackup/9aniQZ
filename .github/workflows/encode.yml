@@ -1,0 +1,177 @@
+name: 9anime R3Encod3r
+
+on:
+  workflow_dispatch:
+    inputs:
+      AniName:
+        description: "Anime Name"
+        required: true
+        default: ""
+        type: string
+      EpCode:
+        description: "EpCode, 1x03|2x01"
+        required: true
+        default: ""
+        type: string
+      AniLang:
+        description: "AniLang"
+        required: true
+        default: "ja"
+        type: choice
+        options:
+        - ja
+        - en
+      SpeedProf:
+        description: "SpeedProf"
+        required: true
+        default: "2"
+        type: choice
+        options:
+        - "0"
+        - "2"
+        - "3"
+        - "X"
+      JobSequence:
+        description: "JobSequence"
+        required: true
+        type: number
+        default: 0
+
+env:
+  SOURCERY: ${{ secrets.SOURCERY }}
+  LocationOnIndex: "td:/9animeStreamZ"
+  ChunkLocationOnIndex: "td:/9animeChunkZ"
+  AniName: ${{ github.event.inputs.AniName }}
+  EpCode: ${{ github.event.inputs.EpCode }}
+  AniLang: ${{ github.event.inputs.AniLang }}
+  SpeedProf: ${{ github.event.inputs.SpeedProf }}
+  JobSequence: ${{ github.event.inputs.JobSequence }}
+
+jobs:
+  primary:
+    name: Prepare Steps for R3Encod3r
+    runs-on: ubuntu-latest
+
+    outputs:
+      EncSpeed: ${{ steps.set-params.outputs.EncSpeed }}
+      R3NC0D3R: ${{ steps.set-params.outputs.R3NC0D3R }}
+      VidRes: ${{ steps.set-params.outputs.VidRes }}
+      GOPType: ${{ steps.set-params.outputs.GOPType }}
+      APIState: ${{ steps.set-params.outputs.APIState }}
+      finalChunk: ${{ steps.set-params.outputs.finalChunk }}
+      matrix: ${{ steps.set-params.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: EncTool Preparation
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./20-EncChnk-bb15437052e6
+          DEOBFUS ./20-EncRcln-f10e2f1d1095
+          DEOBFUS ./20-EncRenc-9bd9703bdd01
+      - name: Upload EncTools as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: xtool
+          path: /usr/local/bin/ff*
+      - name: Create EncMatrix
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./41-EncMtrx-992e65a52755
+      - name: Export Parameters
+        id: set-params
+        run: |
+          echo "::set-output name=EncSpeed::${EncSpeed}"
+          echo "::set-output name=R3NC0D3R::${R3NC0D3R}"
+          echo "::set-output name=VidRes::${VidRes}"
+          echo "::set-output name=GOPType::${GOPType}"
+          echo "::set-output name=APIState::${APIState}"
+          echo "::set-output name=finalChunk::${finalChunk}"
+          echo "::set-output name=matrix::${matrix}"
+
+  enc_9anime:
+    runs-on: ubuntu-latest
+    needs: primary
+
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        ChunkNum: ${{fromJson(needs.primary.outputs.matrix)}}
+
+    env:
+      ChunkNum: ${{ matrix.ChunkNum }}
+      EncSpeed: ${{ needs.primary.outputs.EncSpeed }}
+      R3NC0D3R: ${{ needs.primary.outputs.R3NC0D3R }}
+      VidRes: ${{ needs.primary.outputs.VidRes }}
+      GOPType: ${{ needs.primary.outputs.GOPType }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download EncTools from Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: xtool
+          path: /usr/local/bin/
+      - name: EncTool Preparation
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./20-EncRcln-f10e2f1d1095
+          sudo chmod a+x /usr/local/bin/ff*
+      - name: ${{env.R3NC0D3R}} R3NC0D3R - Chunk_${{env.ChunkNum}} of ${{env.AniName}}
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./68-EncPreW-0bb0bb1b6ca5
+          DEOBFUS ./71-Enc2AIO-78605f212f8a
+          DEOBFUS ./79-EncRehq-70ff84d69bfa
+          if [[ ${R3C0D3} == true ]]; then
+            DEOBFUS ./71-Enc2AIO-78605f212f8a
+          fi
+          DEOBFUS ./89-EncUpld-3a2d6e66703c
+
+  postEnc:
+    name: Loop or Goodbye
+    runs-on: ubuntu-latest
+    needs: [primary, enc_9anime]
+
+    env:
+      APIState: ${{ needs.primary.outputs.APIState }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Trigger Another Workflow
+        if: env.APIState == 'trigger'
+        env:
+          GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
+          GH_TOKEN3: ${{ secrets.GH_TOKEN3 }}
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./97-EncSqnc-00e78d1bd279
+      - name: Merge Whole Episode
+        if: env.APIState == 'merge'
+        env:
+          R3NC0D3R: ${{ needs.primary.outputs.R3NC0D3R }}
+          VidRes: ${{ needs.primary.outputs.VidRes }}
+          GOPType: ${{ needs.primary.outputs.GOPType }}
+          finalChunk: ${{ needs.primary.outputs.finalChunk }}
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./20-EncChnk-bb15437052e6
+          DEOBFUS ./20-EncRcln-f10e2f1d1095
+          DEOBFUS ./91-EncMrgr-9fd78a7cecf9
+      - uses: kolpav/purge-artifacts-action@v1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 4hr

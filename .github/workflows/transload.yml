@@ -1,0 +1,86 @@
+name: 9anime Transloader
+
+on:
+  workflow_dispatch:
+    inputs:
+      PlaylistURL:
+        description: "Playlist URL"
+        required: true
+        default: ""
+        type: string
+      AniName:
+        description: "Anime Name"
+        required: true
+        default: ""
+        type: string
+      EpCode:
+        description: "EpCode, 1x03|2x01"
+        required: true
+        default: ""
+        type: string
+      AniLang:
+        description: "AniLang"
+        required: true
+        default: "ja"
+        type: choice
+        options:
+        - ja
+        - en
+      SpeedProf:
+        description: "SpeedProf"
+        required: false
+        default: "2"
+        type: choice
+        options:
+        - "0"
+        - "2"
+        - "3"
+        - "X"
+
+env:
+  SOURCERY: ${{ secrets.SOURCERY }}
+  LocationOnIndex: "td:/9animeStreamZ"
+  ChunkLocationOnIndex: "td:/9animeChunkZ"
+  PlaylistURL: ${{ github.event.inputs.PlaylistURL }}
+  AniName: ${{ github.event.inputs.AniName }}
+  EpCode: ${{ github.event.inputs.EpCode }}
+  AniLang: ${{ github.event.inputs.AniLang }}
+  SpeedProf: ${{ github.event.inputs.SpeedProf }}
+  RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
+  RCLONE_INSTALL_MIRROR: ${{ secrets.RCLONE_INSTALL_MIRROR }}
+  FTOOL_ARC_URL: ${{ secrets.FTOOL_ARC_URL }}
+  FTOOL_CONVERTER: ${{ secrets.FTOOL_CONVERTER }}
+  FTOOL_PROBER: ${{ secrets.FTOOL_PROBER }}
+
+jobs:
+  primary:
+    name: Transloader
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: EncTool Preparation
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./20-EncChnk-bb15437052e6
+          DEOBFUS ./20-EncRcln-f10e2f1d1095
+          DEOBFUS ./20-EncYtdl-35df7a665295
+          DEOBFUS ./20-EncRenc-9bd9703bdd01
+      - name: "AniLoad Job - ${{env.AniName}} - ${{env.EpCode}}"
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./33-EncTrns-fab7572c4e16
+          DEOBFUS ./37-EncGnrt-17e086dd6e4a
+      - name: "AniLoad Job - ${{env.AniName}} - ${{env.EpCode}}"
+        if: env.SpeedProf != ''
+        env:
+          GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./97-EncSqnc-00e78d1bd279
