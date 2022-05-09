@@ -24,13 +24,14 @@ on:
       SpeedProf:
         description: "SpeedProf"
         required: true
-        default: "2"
+        default: "2x450"
         type: choice
         options:
-        - "0"
-        - "2"
-        - "3"
-        - "X"
+        - ""
+        - "0x450"
+        - "1x360"
+        - "2x450"
+        - "2x360"
       JobSequence:
         description: "JobSequence"
         required: true

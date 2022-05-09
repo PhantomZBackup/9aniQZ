@@ -27,10 +27,16 @@ on:
         - ja
         - en
       SpeedProf:
-        description: "SpeedProf, 0|2|3|X"
+        description: "SpeedProf"
         required: false
-        default: ""
-        type: string
+        default: "2x450"
+        type: choice
+        options:
+        - ""
+        - "0x450"
+        - "1x360"
+        - "2x450"
+        - "2x360"
       QCTest:
         description: "Quality Control"
         required: true
