@@ -29,9 +29,10 @@ on:
         options:
         - ""
         - "0x450"
-        - "1x360"
         - "2x450"
+        - "0x360"
         - "2x360"
+        - "1x360"
       JobSequence:
         description: "JobSequence"
         required: true
@@ -152,6 +153,8 @@ jobs:
               DEOBFUS ./71-Enc2AIO-78605f212f8a
               DEOBFUS ./77-EncVMAF-e0b7ebdeae84
             fi
+          else
+            DEOBFUS ./77-EncVMAF-e0b7ebdeae84
           fi
           DEOBFUS ./89-EncUpld-3a2d6e66703c
       - uses: kolpav/purge-artifacts-action@v1

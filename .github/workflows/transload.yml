@@ -34,9 +34,10 @@ on:
         options:
         - ""
         - "0x450"
-        - "1x360"
         - "2x450"
+        - "0x360"
         - "2x360"
+        - "1x360"
       QCTest:
         description: "Quality Control"
         required: true
