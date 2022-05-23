@@ -88,6 +88,7 @@ jobs:
         with:
           name: xtool
           path: /usr/local/bin/ff*
+          retention-days: 1
       - name: Create EncMatrix
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
@@ -157,11 +158,6 @@ jobs:
             DEOBFUS ./77-EncVMAF-e0b7ebdeae84
           fi
           DEOBFUS ./89-EncUpld-3a2d6e66703c
-      - uses: kolpav/purge-artifacts-action@v1
-        if: failure()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          expire-in: 5hr
 
   postEnc:
     name: Loop or Merge
@@ -213,8 +209,3 @@ jobs:
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./97-EncSqnc-00e78d1bd279
-      - uses: kolpav/purge-artifacts-action@v1
-        if: always()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          expire-in: 3hr
