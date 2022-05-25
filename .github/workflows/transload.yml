@@ -28,11 +28,11 @@ on:
         - en
       SpeedProf:
         description: "SpeedProf"
-        required: false
-        default: ""
+        required: true
+        default: "-"
         type: choice
         options:
-        - ""
+        - "-"
         - "0x450"
         - "2x450"
         - "0x360"
@@ -85,7 +85,7 @@ jobs:
           DEOBFUS ./33-EncTrns-fab7572c4e16
           DEOBFUS ./37-EncGnrt-17e086dd6e4a
       - name: "API Sequencer - ${{env.AniName}} - ${{env.EpCode}}"
-        if: env.SpeedProf != ''
+        if: env.SpeedProf != '-'
         env:
           GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
         run: |
