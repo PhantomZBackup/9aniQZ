@@ -29,7 +29,7 @@ on:
       SpeedProf:
         description: "SpeedProf"
         required: false
-        default: "2x450"
+        default: ""
         type: choice
         options:
         - ""

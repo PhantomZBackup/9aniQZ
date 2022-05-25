@@ -27,7 +27,6 @@ on:
         default: "2x450"
         type: choice
         options:
-        - ""
         - "0x450"
         - "2x450"
         - "0x360"
@@ -141,7 +140,7 @@ jobs:
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./20-EncRcln-f10e2f1d1095
           sudo chmod a+x /usr/local/bin/ff*
-      - name: ${{env.R3NC0D3R}} R3NC0D3R - Chunk_${{env.ChunkNum}} of ${{env.AniName}}
+      - name: ${{env.R3NC0D3R}} R3NC0D3R - Chunk_${{env.ChunkNum}} of ${{env.AniName}} - ${{env.EpCode}}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
@@ -183,7 +182,7 @@ jobs:
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./20-EncRcln-f10e2f1d1095
           sudo chmod a+x /usr/local/bin/ff*
-      - name: Merge Whole Episode
+      - name: Merge Whole Episode of ${{env.AniName}} - ${{env.EpCode}}
         if: env.APIState == 'merge'
         env:
           R3NC0D3R: ${{ needs.primary.outputs.R3NC0D3R }}
@@ -198,7 +197,7 @@ jobs:
           DEOBFUS ./20-EncChnk-bb15437052e6
           DEOBFUS ./20-EncRcln-f10e2f1d1095
           DEOBFUS ./91-EncMrgr-9fd78a7cecf9
-      - name: Trigger Another Workflow
+      - name: Trigger Another Workflow for ${{env.AniName}} - ${{env.EpCode}}
         if: env.APIState == 'trigger'
         env:
           GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
