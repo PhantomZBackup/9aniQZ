@@ -74,20 +74,25 @@ jobs:
       matrix: ${{ steps.set-params.outputs.matrix }}
     steps:
       - uses: actions/checkout@v3
-      - name: EncTool Preparation
+      - name: EncToolZ Cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: EncToolZ
+          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
+      - name: Checkout private tools
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: ZeoRexDevs/EncToolZ
+          token: ${{ secrets.GH_TOKEN }}
+          path: EncToolZ
+      - name: Fix EncToolZ Permissions
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
-          DEOBFUS ./20-EncChnk-bb15437052e6
-          DEOBFUS ./20-EncRcln-f10e2f1d1095
-          DEOBFUS ./20-EncRenc-9bd9703bdd01
-      - name: Upload EncTools as Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: xtool
-          path: /usr/local/bin/ff*
-          retention-days: 1
+          DEOBFUS ./21-EncTool-b473ab7b69f5
       - name: Create EncMatrix
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
@@ -128,18 +133,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Download EncTools from Artifact
-        uses: actions/download-artifact@v3
+      - name: EncToolZ Cache
+        uses: actions/cache@v3
+        id: cache
         with:
-          name: xtool
-          path: /usr/local/bin/
-      - name: EncTool Preparation
+          path: EncToolZ
+          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
+      - name: Checkout private tools
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: ZeoRexDevs/EncToolZ
+          token: ${{ secrets.GH_TOKEN }}
+          path: EncToolZ
+      - name: Fix EncToolZ Permissions
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
-          DEOBFUS ./20-EncRcln-f10e2f1d1095
-          sudo chmod a+x /usr/local/bin/ff*
+          DEOBFUS ./21-EncTool-b473ab7b69f5
       - name: ${{env.R3NC0D3R}} R3NC0D3R - Chunk_${{env.ChunkNum}} of ${{env.AniName}} - ${{env.EpCode}}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
@@ -168,20 +180,38 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Download EncTools from Artifact
+      - name: Trigger Another Workflow for ${{env.AniName}} - ${{env.EpCode}}
+        if: env.APIState == 'trigger'
+        env:
+          GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
+          GH_TOKEN3: ${{ secrets.GH_TOKEN3 }}
+          QCTest: ${{ github.event.inputs.QCTest }}
+        run: |
+          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
+          echo "$SOURCERY" | base64 -d > SOURCERY
+          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
+          DEOBFUS ./97-EncSqnc-00e78d1bd279
+      - name: EncToolZ Cache
         if: env.APIState == 'merge'
-        uses: actions/download-artifact@v3
+        uses: actions/cache@v3
+        id: cache
         with:
-          name: xtool
-          path: /usr/local/bin/
-      - name: EncTool Preparation
+          path: EncToolZ
+          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
+      - name: Checkout private tools
+        if: env.APIState == 'merge' && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: ZeoRexDevs/EncToolZ
+          token: ${{ secrets.GH_TOKEN }}
+          path: EncToolZ
+      - name: Fix EncToolZ Permissions
         if: env.APIState == 'merge'
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
-          DEOBFUS ./20-EncRcln-f10e2f1d1095
-          sudo chmod a+x /usr/local/bin/ff*
+          DEOBFUS ./21-EncTool-b473ab7b69f5
       - name: Merge Whole Episode of ${{env.AniName}} - ${{env.EpCode}}
         if: env.APIState == 'merge'
         env:
@@ -194,17 +224,4 @@ jobs:
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
-          DEOBFUS ./20-EncChnk-bb15437052e6
-          DEOBFUS ./20-EncRcln-f10e2f1d1095
           DEOBFUS ./91-EncMrgr-9fd78a7cecf9
-      - name: Trigger Another Workflow for ${{env.AniName}} - ${{env.EpCode}}
-        if: env.APIState == 'trigger'
-        env:
-          GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
-          GH_TOKEN3: ${{ secrets.GH_TOKEN3 }}
-          QCTest: ${{ github.event.inputs.QCTest }}
-        run: |
-          eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
-          echo "$SOURCERY" | base64 -d > SOURCERY
-          source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
-          DEOBFUS ./97-EncSqnc-00e78d1bd279

@@ -66,15 +66,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: EncTool Preparation
+      - name: EncToolZ Cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: EncToolZ
+          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
+      - name: Checkout private tools
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: ZeoRexDevs/EncToolZ
+          token: ${{ secrets.GH_TOKEN }}
+          path: EncToolZ
+      - name: Fix EncToolZ Permissions
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
-          DEOBFUS ./20-EncChnk-bb15437052e6
-          DEOBFUS ./20-EncRcln-f10e2f1d1095
-          DEOBFUS ./20-EncYtdl-35df7a665295
-          DEOBFUS ./20-EncRenc-9bd9703bdd01
+          DEOBFUS ./21-EncTool-b473ab7b69f5
       - name: "AniLoad Job - ${{env.AniName}} - ${{env.EpCode}}"
         env:
           PlaylistURL: ${{ github.event.inputs.PlaylistURL }}
