@@ -134,14 +134,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: EncToolZ Cache
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: EncToolZ
-          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
       - name: Checkout private tools
-        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: ZeoRexDevs/EncToolZ
@@ -192,15 +185,8 @@ jobs:
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./97-EncSqnc-00e78d1bd279
-      - name: EncToolZ Cache
-        if: env.APIState == 'merge'
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: EncToolZ
-          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
       - name: Checkout private tools
-        if: env.APIState == 'merge' && steps.cache.outputs.cache-hit != 'true'
+        if: env.APIState == 'merge'
         uses: actions/checkout@v3
         with:
           repository: ZeoRexDevs/EncToolZ
