@@ -67,20 +67,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: EncToolZ Cache
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: EncToolZ
-          key: ${{ runner.os }}-${{ hashFiles('.github/cache_timestamp') }}
-      - name: Checkout private tools
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: ZeoRexDevs/EncToolZ
-          token: ${{ secrets.GH_TOKEN }}
-          path: EncToolZ
-      - name: Fix EncToolZ Permissions
+      - uses: rokibhasansagar/custom_workflows/git_config@main
+        env:
+          PAT: ${{ secrets.GH_TOKEN }}
+      - name: Checkout EncToolZ
+        env:
+          ReqdEncToolZ: "ftools mtools rtools ytools"
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
