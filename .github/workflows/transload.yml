@@ -67,7 +67,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: rokibhasansagar/custom_workflows/git_config@main
+      - name: GitHub Auth
+        uses: rokibhasansagar/custom_workflows/git_config@main
         env:
           PAT: ${{ secrets.GH_TOKEN }}
       - name: Checkout EncToolZ

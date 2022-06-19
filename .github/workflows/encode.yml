@@ -75,7 +75,8 @@ jobs:
       matrix: ${{ steps.set-params.outputs.matrix }}
     steps:
       - uses: actions/checkout@v3
-      - uses: rokibhasansagar/custom_workflows/git_config@main
+      - name: GitHub Auth
+        uses: rokibhasansagar/custom_workflows/git_config@main
         env:
           PAT: ${{ secrets.GH_TOKEN }}
       - name: Checkout EncToolZ
@@ -126,7 +127,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: rokibhasansagar/custom_workflows/git_config@main
+      - name: GitHub Auth
+        uses: rokibhasansagar/custom_workflows/git_config@main
         env:
           PAT: ${{ secrets.GH_TOKEN }}
       - name: Checkout EncToolZ
@@ -176,7 +178,8 @@ jobs:
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./97-EncSqnc-00e78d1bd279
-      - uses: rokibhasansagar/custom_workflows/git_config@main
+      - name: GitHub Auth
+        uses: rokibhasansagar/custom_workflows/git_config@main
         if: env.APIState == 'merge'
         env:
           PAT: ${{ secrets.GH_TOKEN }}
