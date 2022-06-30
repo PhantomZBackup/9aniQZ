@@ -25,6 +25,7 @@ on:
         type: choice
         options:
         - "0x450"
+        - "3x450"
         - "2x450"
         - "1x450"
         - "2x360"
