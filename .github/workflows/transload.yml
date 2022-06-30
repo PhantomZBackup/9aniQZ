@@ -18,14 +18,11 @@ on:
         required: true
         default: ""
         type: string
-      AniLang:
-        description: "AniLang"
+      DubbedAud:
+        description: "English Dubbed?"
         required: true
-        default: "ja"
-        type: choice
-        options:
-        - ja
-        - en
+        type: boolean
+        default: false
       SpeedProf:
         description: "SpeedProf"
         required: true
@@ -50,7 +47,7 @@ env:
   ChunkLocationOnIndex: "td:/9animeChunkZ"
   AniName: ${{ github.event.inputs.AniName }}
   EpCode: ${{ github.event.inputs.EpCode }}
-  AniLang: ${{ github.event.inputs.AniLang }}
+  DubbedAud: ${{ github.event.inputs.DubbedAud }}
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
   QCTest: ${{ github.event.inputs.QCTest }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}

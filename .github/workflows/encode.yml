@@ -13,14 +13,11 @@ on:
         required: true
         default: ""
         type: string
-      AniLang:
-        description: "AniLang"
+      DubbedAud:
+        description: "English Dubbed?"
         required: true
-        default: "ja"
-        type: choice
-        options:
-        - ja
-        - en
+        type: boolean
+        default: false
       SpeedProf:
         description: "SpeedProf"
         required: true
@@ -49,7 +46,7 @@ env:
   ChunkLocationOnIndex: "td:/9animeChunkZ"
   AniName: ${{ github.event.inputs.AniName }}
   EpCode: ${{ github.event.inputs.EpCode }}
-  AniLang: ${{ github.event.inputs.AniLang }}
+  DubbedAud: ${{ github.event.inputs.DubbedAud }}
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
   JobSequence: ${{ github.event.inputs.JobSequence }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
@@ -69,6 +66,7 @@ jobs:
       VidRes: ${{ steps.set-params.outputs.VidRes }}
       GOPType: ${{ steps.set-params.outputs.GOPType }}
       AudioType: ${{ steps.set-params.outputs.AudioType }}
+      AniLang: ${{ steps.set-params.outputs.AniLang }}
       APIState: ${{ steps.set-params.outputs.APIState }}
       finalChunk: ${{ steps.set-params.outputs.finalChunk }}
       matrix: ${{ steps.set-params.outputs.matrix }}
@@ -100,6 +98,7 @@ jobs:
           echo "::set-output name=VidRes::${VidRes}"
           echo "::set-output name=GOPType::${GOPType}"
           echo "::set-output name=AudioType::${AudioType}"
+          echo "::set-output name=AniLang::${AniLang}"
           echo "::set-output name=APIState::${APIState}"
           echo "::set-output name=finalChunk::${finalChunk}"
           echo "::set-output name=matrix::${matrix}"
@@ -122,6 +121,7 @@ jobs:
       VidRes: ${{ needs.primary.outputs.VidRes }}
       GOPType: ${{ needs.primary.outputs.GOPType }}
       AudioType: ${{ needs.primary.outputs.AudioType }}
+      AniLang: ${{ needs.primary.outputs.AniLang }}
       QCTest: ${{ github.event.inputs.QCTest }}
 
     steps:
@@ -198,6 +198,7 @@ jobs:
           VidRes: ${{ needs.primary.outputs.VidRes }}
           GOPType: ${{ needs.primary.outputs.GOPType }}
           AudioType: ${{ needs.primary.outputs.AudioType }}
+          AniLang: ${{ needs.primary.outputs.AniLang }}
           finalChunk: ${{ needs.primary.outputs.finalChunk }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
