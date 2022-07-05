@@ -30,13 +30,18 @@ on:
         - "1x450"
         - "2x360"
         - "1x360"
+      SpeedHack:
+        description: "Enable SpeedHack?"
+        required: true
+        type: boolean
+        default: false
       JobSequence:
         description: "JobSequence"
         required: true
         type: number
         default: 0
       QCTest:
-        description: "Quality Control"
+        description: "Enable QC Check?"
         required: true
         type: boolean
         default: false
@@ -49,10 +54,9 @@ env:
   EpCode: ${{ github.event.inputs.EpCode }}
   DubbedAud: ${{ github.event.inputs.DubbedAud }}
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
+  SpeedHack: ${{ github.event.inputs.SpeedHack }}
   JobSequence: ${{ github.event.inputs.JobSequence }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
-  RCLONE_INSTALL_MIRROR: ${{ secrets.RCLONE_INSTALL_MIRROR }}
-  FTOOL_ARC_URL: ${{ secrets.FTOOL_ARC_URL }}
   FTOOL_CONVERTER: ${{ secrets.FTOOL_CONVERTER }}
   FTOOL_PROBER: ${{ secrets.FTOOL_PROBER }}
 
@@ -201,6 +205,7 @@ jobs:
           AudioType: ${{ needs.primary.outputs.AudioType }}
           AniLang: ${{ needs.primary.outputs.AniLang }}
           finalChunk: ${{ needs.primary.outputs.finalChunk }}
+          EncSpeed: ${{ needs.primary.outputs.EncSpeed }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
