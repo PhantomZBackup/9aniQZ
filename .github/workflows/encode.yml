@@ -13,11 +13,6 @@ on:
         required: true
         default: ""
         type: string
-      DubbedAud:
-        description: "English Dubbed?"
-        required: true
-        type: boolean
-        default: false
       SpeedProf:
         description: "SpeedProf"
         required: true
@@ -32,16 +27,31 @@ on:
         - "1x450"
         - "2x360"
         - "1x360"
-      SpeedHack:
-        description: "Enable SpeedHack?"
-        required: true
-        type: boolean
-        default: false
       JobSequence:
         description: "JobSequence"
         required: true
         type: number
         default: 0
+      DubbedAud:
+        description: "English Dubbed?"
+        required: true
+        type: boolean
+        default: false
+      AutoKeyFrame:
+        description: "Enable Automatic KeyFrame Decision?"
+        required: true
+        type: boolean
+        default: false
+      AggrDenoise:
+        description: "Enable Aggressive Frame Denoising?"
+        required: true
+        type: boolean
+        default: false
+      SpeedHack:
+        description: "Enable SpeedHack?"
+        required: true
+        type: boolean
+        default: false
       QCTest:
         description: "Enable QC Check?"
         required: true
@@ -56,6 +66,8 @@ env:
   EpCode: ${{ github.event.inputs.EpCode }}
   DubbedAud: ${{ github.event.inputs.DubbedAud }}
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
+  AutoKeyFrame: ${{ github.event.inputs.AutoKeyFrame }}
+  AggrDenoise: ${{ github.event.inputs.AggrDenoise }}
   SpeedHack: ${{ github.event.inputs.SpeedHack }}
   JobSequence: ${{ github.event.inputs.JobSequence }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
