@@ -24,6 +24,8 @@ on:
         default: "2x450"
         type: choice
         options:
+        - "0x576"
+        - "3x576"
         - "0x450"
         - "3x450"
         - "2x450"
