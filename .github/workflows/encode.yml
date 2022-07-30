@@ -21,12 +21,11 @@ on:
         options:
         - "0x576"
         - "3x576"
+        - "2x576"
         - "0x450"
         - "3x450"
         - "2x450"
-        - "1x450"
         - "2x360"
-        - "1x360"
       JobSequence:
         description: "JobSequence"
         required: true
