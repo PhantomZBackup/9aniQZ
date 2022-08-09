@@ -216,7 +216,7 @@ jobs:
           VidRes: ${{ needs.primary.outputs.VidRes }}
           GOPType: ${{ needs.primary.outputs.GOPType }}
           AudioType: ${{ needs.primary.outputs.AudioType }}
-          AniLang: ${{ needs.primary.outputs.AniLang }}
+          # AniLang: ${{ needs.primary.outputs.AniLang }}
           finalChunk: ${{ needs.primary.outputs.finalChunk }}
           EncSpeed: ${{ needs.primary.outputs.EncSpeed }}
         run: |
