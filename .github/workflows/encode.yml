@@ -88,6 +88,7 @@ jobs:
       APIState: ${{ steps.set-params.outputs.APIState }}
       finalChunk: ${{ steps.set-params.outputs.finalChunk }}
       matrix: ${{ steps.set-params.outputs.matrix }}
+      safile_json: ${{ steps.set-params.outputs.safile_json }}
     steps:
       - uses: actions/checkout@v3
       - name: GitHub Auth
@@ -111,6 +112,7 @@ jobs:
       - name: Export Parameters
         id: set-params
         run: |
+          echo "[i] Passing Parameters to EncMatrix..."
           echo "::set-output name=EncSpeed::${EncSpeed}"
           echo "::set-output name=R3NC0D3R::${R3NC0D3R}"
           echo "::set-output name=VidRes::${VidRes}"
@@ -120,6 +122,7 @@ jobs:
           echo "::set-output name=APIState::${APIState}"
           echo "::set-output name=finalChunk::${finalChunk}"
           echo "::set-output name=matrix::${matrix}"
+          echo "::set-output name=safile_json::${safile_json}"
 
   enc_9anime:
     name: Encode Phase
@@ -151,6 +154,7 @@ jobs:
       - name: Checkout EncToolZ
         env:
           ReqdEncToolZ: "ftools rtools"
+          safile_json: ${{ needs.primary.outputs.safile_json }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
@@ -204,6 +208,7 @@ jobs:
         if: env.APIState == 'merge'
         env:
           ReqdEncToolZ: "ftools mtools rtools"
+          safile_json: ${{ needs.primary.outputs.safile_json }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY
@@ -216,7 +221,6 @@ jobs:
           VidRes: ${{ needs.primary.outputs.VidRes }}
           GOPType: ${{ needs.primary.outputs.GOPType }}
           AudioType: ${{ needs.primary.outputs.AudioType }}
-          # AniLang: ${{ needs.primary.outputs.AniLang }}
           finalChunk: ${{ needs.primary.outputs.finalChunk }}
           EncSpeed: ${{ needs.primary.outputs.EncSpeed }}
         run: |
