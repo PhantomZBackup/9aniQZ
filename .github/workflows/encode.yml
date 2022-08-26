@@ -76,7 +76,7 @@ env:
 jobs:
   primary:
     name: Prepare Steps for R3Encod3r
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     outputs:
       EncSpeed: ${{ steps.set-params.outputs.EncSpeed }}
@@ -126,7 +126,7 @@ jobs:
 
   enc_9anime:
     name: Encode Phase
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: primary
 
     strategy:
@@ -180,7 +180,7 @@ jobs:
 
   postEnc:
     name: Loop or Merge
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [primary, enc_9anime]
 
     env:
