@@ -47,6 +47,11 @@ on:
         required: true
         type: boolean
         default: false
+      SmallerGOP:
+        description: "Use Smaller GOP Boundaries (Less Compression)?"
+        required: true
+        type: boolean
+        default: false
       SpeedHack:
         description: "Enable SpeedHack?"
         required: true
@@ -68,6 +73,7 @@ env:
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
   AutoKeyFrame: ${{ github.event.inputs.AutoKeyFrame }}
   AggrDenoise: ${{ github.event.inputs.AggrDenoise }}
+  SmallerGOP: ${{ github.event.inputs.SmallerGOP }}
   SpeedHack: ${{ github.event.inputs.SpeedHack }}
   QCTest: ${{ github.event.inputs.QCTest }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
