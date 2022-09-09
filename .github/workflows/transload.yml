@@ -32,34 +32,19 @@ on:
         - "3x450"
         - "2x450"
         - "2x360"
-      DubbedAud:
-        description: "English Dubbed?"
-        required: true
+      QCTest:
+        description: "Enable QC Check?"
+        required: false
         type: boolean
         default: false
-      AutoKeyFrame:
-        description: "Enable Automatic KeyFrame Decision?"
-        required: true
+      DubbedAud:
+        description: "English Dubbed?"
+        required: false
         type: boolean
         default: false
       AggrDenoise:
         description: "Enable Aggressive Frame Denoising?"
-        required: true
-        type: boolean
-        default: false
-      SmallerGOP:
-        description: "Use Smaller GOP Boundaries (Less Compression)?"
-        required: true
-        type: boolean
-        default: false
-      SpeedHack:
-        description: "Enable SpeedHack?"
-        required: true
-        type: boolean
-        default: false
-      QCTest:
-        description: "Enable QC Check?"
-        required: true
+        required: false
         type: boolean
         default: false
 
@@ -71,14 +56,9 @@ env:
   EpCode: ${{ github.event.inputs.EpCode }}
   DubbedAud: ${{ github.event.inputs.DubbedAud }}
   SpeedProf: ${{ github.event.inputs.SpeedProf }}
-  AutoKeyFrame: ${{ github.event.inputs.AutoKeyFrame }}
   AggrDenoise: ${{ github.event.inputs.AggrDenoise }}
-  SmallerGOP: ${{ github.event.inputs.SmallerGOP }}
-  SpeedHack: ${{ github.event.inputs.SpeedHack }}
   QCTest: ${{ github.event.inputs.QCTest }}
   RCLONE_CONFIG_URL: ${{ secrets.RCLONE_CONFIG_URL }}
-  FTOOL_CONVERTER: ${{ secrets.FTOOL_CONVERTER }}
-  FTOOL_PROBER: ${{ secrets.FTOOL_PROBER }}
 
 jobs:
   primary:
