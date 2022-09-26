@@ -185,6 +185,7 @@ jobs:
         env:
           GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
           GH_TOKEN3: ${{ secrets.GH_TOKEN3 }}
+          GH_TOKEN5: ${{ secrets.GH_TOKEN5 }}
           QCTest: ${{ github.event.inputs.QCTest }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
@@ -199,7 +200,7 @@ jobs:
       - name: Checkout EncToolZ
         if: env.APIState == 'merge'
         env:
-          ReqdEncToolZ: "ftools mtools rtools"
+          ReqdEncToolZ: "ftools rtools"
           safile_json: ${{ needs.primary.outputs.safile_json }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
