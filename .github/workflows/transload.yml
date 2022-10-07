@@ -94,6 +94,8 @@ jobs:
         if: env.SpeedProf != '-'
         env:
           GH_TOKEN2: ${{ secrets.GH_TOKEN2 }}
+          GH_TOKEN3: ${{ secrets.GH_TOKEN3 }}
+          GH_TOKEN5: ${{ secrets.GH_TOKEN5 }}
         run: |
           eval 'set -eo pipefail' 2>/dev/null && eval 'set +o history' 2>/dev/null
           echo "$SOURCERY" | base64 -d > SOURCERY

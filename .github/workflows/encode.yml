@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       AniName:
-        description: "Anime Name"
+        description: "Formatted Name of the Anime"
         required: true
         default: ""
         type: string
       EpCode:
-        description: "EpCode, 1x03|2x01"
+        description: "EpCode, 1x03|2x01|EpFull|0xOVA"
         required: true
         default: ""
         type: string
@@ -100,7 +100,6 @@ jobs:
       - name: Export Parameters
         id: set-params
         run: |
-          echo "[i] Passing Parameters to EncMatrix..."
           echo "::set-output name=EncSpeed::${EncSpeed}"
           echo "::set-output name=R3NC0D3R::${R3NC0D3R}"
           echo "::set-output name=VidRes::${VidRes}"
@@ -119,7 +118,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 8
+      max-parallel: 10
       matrix:
         ChunkNum: ${{fromJson(needs.primary.outputs.matrix)}}
 
@@ -207,7 +206,7 @@ jobs:
           echo "$SOURCERY" | base64 -d > SOURCERY
           source ./SOURCERY &>/dev/null && rm -f ./SOURCERY && eval 'set -o history' 2>/dev/null
           DEOBFUS ./21-EncTool-b473ab7b69f5
-      - name: Merge Whole Episode of ${{env.AniName}} - ${{env.EpCode}}
+      - name: Merge ${{env.AniName}} - ${{env.EpCode}}
         if: env.APIState == 'merge'
         env:
           R3NC0D3R: ${{ needs.primary.outputs.R3NC0D3R }}
