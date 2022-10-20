@@ -100,16 +100,16 @@ jobs:
       - name: Export Parameters
         id: set-params
         run: |
-          echo "::set-output name=EncSpeed::${EncSpeed}"
-          echo "::set-output name=R3NC0D3R::${R3NC0D3R}"
-          echo "::set-output name=VidRes::${VidRes}"
-          echo "::set-output name=GOPType::${GOPType}"
-          echo "::set-output name=AudioType::${AudioType}"
-          echo "::set-output name=AniLang::${AniLang}"
-          echo "::set-output name=APIState::${APIState}"
-          echo "::set-output name=finalChunk::${finalChunk}"
-          echo "::set-output name=matrix::${matrix}"
-          echo "::set-output name=safile_json::${safile_json}"
+          echo "EncSpeed=${EncSpeed}" >> $GITHUB_OUTPUT
+          echo "R3NC0D3R=${R3NC0D3R}" >> $GITHUB_OUTPUT
+          echo "VidRes=${VidRes}" >> $GITHUB_OUTPUT
+          echo "GOPType=${GOPType}" >> $GITHUB_OUTPUT
+          echo "AudioType=${AudioType}" >> $GITHUB_OUTPUT
+          echo "AniLang=${AniLang}" >> $GITHUB_OUTPUT
+          echo "APIState=${APIState}" >> $GITHUB_OUTPUT
+          echo "finalChunk=${finalChunk}" >> $GITHUB_OUTPUT
+          echo "matrix=${matrix}" >> $GITHUB_OUTPUT
+          echo "safile_json=${safile_json}" >> $GITHUB_OUTPUT
 
   enc_9anime:
     name: Encode Phase
