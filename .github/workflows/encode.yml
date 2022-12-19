@@ -51,6 +51,7 @@ env:
   SOURCERY: ${{ secrets.SOURCERY }}
   LocationOnIndex: "td:/9animeStreamZ"
   ChunkLocationOnIndex: "td:/9animeChunkZ"
+  R3NC0D3R: "AV01"
   AniName: ${{ github.event.inputs.AniName }}
   EpCode: ${{ github.event.inputs.EpCode }}
   DubbedAud: ${{ github.event.inputs.DubbedAud }}
@@ -66,10 +67,9 @@ jobs:
 
     outputs:
       EncSpeed: ${{ steps.set-params.outputs.EncSpeed }}
-      R3NC0D3R: ${{ steps.set-params.outputs.R3NC0D3R }}
       VidRes: ${{ steps.set-params.outputs.VidRes }}
       GOPType: ${{ steps.set-params.outputs.GOPType }}
-      AudioType: ${{ steps.set-params.outputs.AudioType }}
+      AudType: ${{ steps.set-params.outputs.AudType }}
       AniLang: ${{ steps.set-params.outputs.AniLang }}
       APIState: ${{ steps.set-params.outputs.APIState }}
       finalChunk: ${{ steps.set-params.outputs.finalChunk }}
@@ -101,10 +101,9 @@ jobs:
         id: set-params
         run: |
           echo "EncSpeed=${EncSpeed}" >> $GITHUB_OUTPUT
-          echo "R3NC0D3R=${R3NC0D3R}" >> $GITHUB_OUTPUT
           echo "VidRes=${VidRes}" >> $GITHUB_OUTPUT
           echo "GOPType=${GOPType}" >> $GITHUB_OUTPUT
-          echo "AudioType=${AudioType}" >> $GITHUB_OUTPUT
+          echo "AudType=${AudType}" >> $GITHUB_OUTPUT
           echo "AniLang=${AniLang}" >> $GITHUB_OUTPUT
           echo "APIState=${APIState}" >> $GITHUB_OUTPUT
           echo "finalChunk=${finalChunk}" >> $GITHUB_OUTPUT
@@ -125,10 +124,9 @@ jobs:
     env:
       ChunkNum: ${{ matrix.ChunkNum }}
       EncSpeed: ${{ needs.primary.outputs.EncSpeed }}
-      R3NC0D3R: ${{ needs.primary.outputs.R3NC0D3R }}
       VidRes: ${{ needs.primary.outputs.VidRes }}
       GOPType: ${{ needs.primary.outputs.GOPType }}
-      AudioType: ${{ needs.primary.outputs.AudioType }}
+      AudType: ${{ needs.primary.outputs.AudType }}
       AniLang: ${{ needs.primary.outputs.AniLang }}
       QCTest: ${{ github.event.inputs.QCTest }}
 
@@ -209,10 +207,9 @@ jobs:
       - name: Merge ${{env.AniName}} - ${{env.EpCode}}
         if: env.APIState == 'merge'
         env:
-          R3NC0D3R: ${{ needs.primary.outputs.R3NC0D3R }}
           VidRes: ${{ needs.primary.outputs.VidRes }}
           GOPType: ${{ needs.primary.outputs.GOPType }}
-          AudioType: ${{ needs.primary.outputs.AudioType }}
+          AudType: ${{ needs.primary.outputs.AudType }}
           finalChunk: ${{ needs.primary.outputs.finalChunk }}
           EncSpeed: ${{ needs.primary.outputs.EncSpeed }}
         run: |
